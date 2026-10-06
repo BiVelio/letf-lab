@@ -1,0 +1,9 @@
+# Datos descargados y salidas: nunca se versionan (los datos tienen sus propias condiciones de uso).
+/data/
+/letf/data/
+/letf/reports/
+*.parquet
+*.csv
+__pycache__/
+*.egg-info/
+.venv/

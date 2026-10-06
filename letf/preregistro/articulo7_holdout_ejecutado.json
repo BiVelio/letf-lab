@@ -1,0 +1,55 @@
+{
+  "estado": "completado",
+  "inicio": "2026-09-30T23:04:44",
+  "configuracion_sha256": "97e5465dab2be9d36bac2bd4d93bf51a5827083bd61d5e7c78343a9089b1ff20",
+  "fin": "2026-09-30T23:07:04",
+  "informe": "letf/reports/r36_indicador_holdout/README.md",
+  "resumen": {
+    "H1": {
+      "S&P 500": {
+        "estado": "parcial",
+        "mejor con QLIKE": true,
+        "mejor con crecimiento": false
+      },
+      "Nasdaq-100": {
+        "estado": "no confirmada",
+        "mejor con QLIKE": false,
+        "mejor con crecimiento": false
+      }
+    },
+    "H6": {
+      "Bono largo": {
+        "estado": "confirmada",
+        "mejor con QLIKE": true,
+        "mejor con crecimiento": true
+      }
+    },
+    "H2": {
+      "S&P 500": "no confirmada",
+      "Nasdaq-100": "no confirmada"
+    },
+    "H3": {
+      "S&P 500": "confirmada (no supera a la LRS), p SPA = 1.000",
+      "Nasdaq-100": "confirmada (no supera a la LRS), p SPA = 1.000"
+    },
+    "H4": {
+      "S&P 500": "no confirmada",
+      "Nasdaq-100": "confirmada"
+    },
+    "H5": {
+      "S&P 500": "no confirmada",
+      "Nasdaq-100": "no confirmada"
+    },
+    "H7": {
+      "crecimiento": false,
+      "caída frente a TMF": true,
+      "estado": "no confirmada"
+    },
+    "H8": {
+      "no supera a la LRS ni a la HFEA": true,
+      "menor caída que la HFEA": true,
+      "estado": "confirmada"
+    }
+  },
+  "prerregistro_cambiado_tras_congelar": true
+}

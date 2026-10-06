@@ -1,0 +1,405 @@
+{
+  "estudio": "Artículo 7 — indicador del apalancamiento óptimo (SSO, UPRO, QLD, TQQQ, UBT, TMF, UST, TYD)",
+  "prerregistro": {
+    "archivo": "letf/preregistro/articulo7_indicador.md",
+    "commits": [
+      "aafe958",
+      "02faefc"
+    ],
+    "sha256": "2fbc59d0bfd1c71fdd829d8dd05148353f1c53e091c4ccb87e856824fa6ff8cf"
+  },
+  "congelado": {
+    "fecha": "2026-09-30",
+    "commit_base": "02faefc89496d17983a4f395e1230a604d5183a1",
+    "nota": "código sin commit en el momento de congelar: la huella SHA-256 de cada archivo es la referencia, no el commit"
+  },
+  "muestras": {
+    "desarrollo_fin": "2018-12-31",
+    "prueba_inicio": "2019-01-01",
+    "prueba_fin": "2026-09-25",
+    "inicio_por_mercado": {
+      "S&P 500": "1960-01-04",
+      "Nasdaq-100": "1985-10-02",
+      "Bono largo": "1962-01-03",
+      "Bono medio": "1962-01-03"
+    }
+  },
+  "parametros": {
+    "horizons": [
+      21,
+      63
+    ],
+    "h_main": 21,
+    "kappa": 1.0,
+    "levels": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "ruin_p_annual": 0.001,
+    "evt_q": 0.95,
+    "evt_min": 2520,
+    "evt_refit": 252,
+    "drift_min": 2520,
+    "prudent": 0.0,
+    "trend_n": 200,
+    "trend_min": 2520,
+    "trend_refit": 21,
+    "corr_windows": [
+      21,
+      63,
+      252
+    ],
+    "corr_min": 2520,
+    "corr_refit": 21,
+    "corr_clip": 0.999,
+    "cost_bps": 5.0,
+    "exec_lag": 2,
+    "block": 63,
+    "B": 2000,
+    "B_mcs": 1000,
+    "seed": 35,
+    "alpha": 0.1,
+    "loss_p": 0.5,
+    "h5_share": 0.75,
+    "hfea_w": 0.55,
+    "sb_equity": "S&P 500",
+    "sb_bond": "Bono largo",
+    "sb_cap": 3,
+    "harri_min_obs": 2520,
+    "harri_min_obs_extra": 1260,
+    "harri_refit": 21,
+    "harri_disp_min": 252,
+    "bench_min_obs": 2520,
+    "garch_refit": 252
+  },
+  "mercados": {
+    "S&P 500": {
+      "tipo": "acciones",
+      "fondos": {
+        "1": "SPY",
+        "2": "SSO",
+        "3": "UPRO"
+      },
+      "lanzamiento_real": {
+        "2": "2006-06-22",
+        "3": "2009-06-26"
+      },
+      "prior_deriva": "kelly.premium: media creciente de u − f hasta t − 1"
+    },
+    "Nasdaq-100": {
+      "tipo": "acciones",
+      "fondos": {
+        "1": "QQQ",
+        "2": "QLD",
+        "3": "TQQQ"
+      },
+      "lanzamiento_real": {
+        "2": "2006-06-22",
+        "3": "2010-02-12"
+      },
+      "prior_deriva": "kelly.premium: media creciente de u − f hasta t − 1"
+    },
+    "Bono largo": {
+      "tipo": "bonos",
+      "fondos": {
+        "1": "TLT",
+        "2": "UBT",
+        "3": "TMF"
+      },
+      "lanzamiento_real": {
+        "2": "2010-01-22",
+        "3": "2009-04-17"
+      },
+      "prior_deriva": "carry del bono sintético (prior_ann) al cierre de t − 1"
+    },
+    "Bono medio": {
+      "tipo": "bonos",
+      "fondos": {
+        "1": "IEF",
+        "2": "UST",
+        "3": "TYD"
+      },
+      "lanzamiento_real": {
+        "2": "2010-02-03",
+        "3": "2009-04-17"
+      },
+      "prior_deriva": "carry del bono sintético (prior_ann) al cierre de t − 1"
+    }
+  },
+  "rupturas_de_serie": {
+    "largo": [
+      "1973-01-04"
+    ]
+  },
+  "modelo_varianza": {
+    "funcion": "letf_lab.research.r34_harri.forecast",
+    "grupos": [
+      "har",
+      "semivarianza",
+      "saltos",
+      "rango",
+      "implícita",
+      "pendiente",
+      "volvol"
+    ],
+    "min_obs": 2520,
+    "min_obs_extra": 1260,
+    "refit": 21,
+    "disp_min": 252,
+    "duan_min": 63,
+    "cuantiles": [
+      0.05,
+      0.1,
+      0.25,
+      0.5,
+      0.75,
+      0.9,
+      0.95
+    ],
+    "vvix_desde": "2007-01-01"
+  },
+  "especificacion": [
+    "(los del prerregistro; entre corchetes, lo que el prerregistro no fija y aquí se fija):",
+    "1. Objetivo. g(L) = rf + L·(μ − f − s_L) − ER_L − ½·L²·IV(h), anual. [L = 1 es el ETF 1x (o el",
+    "índice antes de él): no paga financiación ni s, g(1) = μ − ½·IV; L = 0 son letras, g(0) = rf.]",
+    "2. Varianza: HAR-RI de R34 (r34.forecast): E[IV(h)] y su dispersión de(IV) en tiempo real.",
+    "3. Deriva con contracción. Prior: acciones, la media creciente de u − f con datos hasta t − 1",
+    "(kelly.premium); bonos, el carry del bono sintético (rendimiento − financiación + rodadura) al",
+    "cierre de t − 1. [Valor prudente: μ − f = 0 (ninguna prima sobre la financiación).] Peso de Kan y",
+    "Zhou (2007, regla de dos fondos con N = 1 activo): w = (T − 5)/T · θ²_a/(θ²_a + 1/T), con θ̂² =",
+    "(m/ee)²/T la razón de Sharpe diaria al cuadrado del prior frente a su error típico ee con T",
+    "sesiones y θ²_a su estimador ajustado (Kan y Zhou, con la beta incompleta). [En bonos, ee es el",
+    "error típico de la media de u − f − carry: cuánto se sabe de que el carry no está sesgado.]",
+    "Tendencia: estado S_t = 1 si el índice con dividendos cierra por encima de su media de 200",
+    "sesiones; su efecto β es la pendiente de la regresión de la media de las h sesiones siguientes",
+    "de u − f (en bonos, de u − f − carry) sobre S − S̄, con los pares cuyo objetivo ya se conoce en",
+    "t − 1, reestimada cada 21 sesiones con al menos 10 años de pares (t de Hansen y Hodrick con",
+    "h − 1 retardos). μ − f = prior contraído + β·(S_t − S̄). [ee(μ)² = w·ee(prior)² + (S_t − S̄)²·",
+    "ee(β)²: la varianza a posteriori del prior contraído más la del efecto de la tendencia.]",
+    "4. Kelly robusto con κ = 1: L* = (μ − f − s − κ·ee(μ))/(E[IV] + κ·de(IV)). [s del 3x; el L*",
+    "continuo no descuenta la comisión, como kelly.LSTAR_APROX.] La recomendación discreta maximiza",
+    "el crecimiento robusto g_κ(L) (la fórmula 1 con μ − f − κ·ee y E[IV] + κ·de), con los costes de",
+    "cada fondo.",
+    "5. Ruina (EVT condicional de McNeil y Frey 2000): GJR-GARCH(1,1) gaussiano con ventana creciente",
+    "(reestimado cada 252 sesiones, 10 años de mínimo) y Pareto generalizada sobre las pérdidas",
+    "estandarizadas por encima de su cuantil 95%. p_t(L) = P(u_{t+1} ≤ −1/L | σ_{t+1}); se descarta",
+    "L si 1 − (1 − p_t)^252 > 1/1.000. [L = 0 y L = 1 nunca se descartan.]",
+    "6. Histéresis: L_t = argmax_L [g_κ(L) − c(L_{t−1} → L)·252/h] entre los L permitidos, con c = 5 pb",
+    "por unidad negociada (vender un fondo y comprar otro son dos unidades; las letras no pagan).",
+    "Solo cambia si la mejora del crecimiento esperado en h sesiones supera el coste; si el L que se",
+    "tiene deja de estar permitido, se cambia sin más.",
+    "7. Cartera de acciones y bonos (H8): S&P 500 y bono largo con el 3x de cada uno (UPRO y TMF, pesos",
+    "L/3, resto en letras, L_acc + L_bono ≤ 3 como la HFEA), la combinación de la rejilla {0, 1, 2,",
+    "3}² que maximiza el crecimiento robusto conjunto con la correlación prevista, cada L por debajo",
+    "del máximo permitido de su activo, histéresis igual y reajuste trimestral y en cada cambio. La",
+    "correlación prevista es un HAR sobre la z de Fisher de las correlaciones realizadas de 21, 63 y",
+    "252 sesiones, estimado con ventana creciente y solo pares cuyo objetivo ya se conoce."
+  ],
+  "hipotesis": {
+    "H1": {
+      "texto": "HAR-RI prevé IV(21) mejor que HAR-log con Duan y que GJR-GARCH (S&P 500 y Nasdaq-100)",
+      "contraste": "r34.compare en las previsiones hechas en la prueba con la ventana objetivo completa: MCS al 90% (QLIKE y pérdida de crecimiento, bloque 63) y Diebold–Mariano con Hansen–Hodrick (h − 1 retardos)",
+      "regla": "por mercado y pérdida: mejor si el p unilateral de Diebold–Mariano < 0,10 frente a los DOS benchmarks; H1 se confirma en un mercado si pasa con QLIKE y con la pérdida de crecimiento (parcial si solo con una); h = 63 es sensibilidad. La pérdida de crecimiento usa la prima constante del desarrollo."
+    },
+    "H2": {
+      "texto": "La cartera del indicador (h = 21, con histéresis) crece más que el 1x y el 2x fijos",
+      "contraste": "Δg de log(1 + r) con bootstrap estacionario emparejado (bloque 63, B = 2000), familia de 4 (S&P 500 y Nasdaq-100 × 1x y 2x) con Romano–Wolf",
+      "regla": "se confirma en un mercado si Δg > 0 y el p de Romano–Wolf < 0,10 frente al 1x y frente al 2x"
+    },
+    "H3": {
+      "texto": "El indicador no supera a la LRS de Gayed y Bilello",
+      "contraste": "SPA de Hansen (consistente) de las variantes h ∈ {21, 63} con κ = 1 frente a la LRS 3x, por mercado",
+      "regla": "mejora solo si p SPA < 0,10; H3 (no supera) se confirma si p SPA ≥ 0,10"
+    },
+    "H4": {
+      "texto": "A igual exposición media, el indicador tiene menor caída máxima y menor probabilidad de perder el 50% que la LRS",
+      "contraste": "la estrategia con más exposición media en la ventana se mezcla a diario con letras hasta igualar la de la otra; caída máxima de la ventana y probabilidad de una caída máxima ≥ 50% en remuestreos estacionarios emparejados de la ventana (bloque 63)",
+      "regla": "se confirma si la caída máxima del indicador es menor (en valor absoluto) Y su probabilidad de perder el 50% es estrictamente menor; se informa también el p del bootstrap de la caída"
+    },
+    "H5": {
+      "texto": "L* está correlacionado negativamente con la varianza prevista y apenas con la tendencia",
+      "contraste": "descomposición exacta (Shapley) de la varianza del L* continuo (h = 21) en varianza prevista, prior y tendencia; correlaciones con E[IV] y con el estado S",
+      "regla": "se confirma si corr(L*, E[IV]) < 0 con p unilateral < 0,10, la parte de la varianza ≥ 0,75 y |corr(L*, S)| < |corr(L*, E[IV])| (S&P 500 y Nasdaq-100; los bonos se informan)"
+    },
+    "H6": {
+      "texto": "HAR-RI prevé la IV(21) del bono largo mejor que HAR-log con Duan y que GJR-GARCH",
+      "contraste": "el de H1",
+      "regla": "la de H1"
+    },
+    "H7": {
+      "texto": "El indicador del bono largo crece más que TLT (1x) y UBT (2x) y tiene menor caída máxima que TMF (3x)",
+      "contraste": "el de H2 con la familia {1x, 2x} del bono largo; caída máxima de la ventana",
+      "regla": "se confirma si Δg > 0 con p de Romano–Wolf < 0,10 frente a TLT y a UBT y la caída máxima es menor que la de TMF"
+    },
+    "H8": {
+      "texto": "La cartera de acciones y bonos no supera a la LRS ni a la HFEA 55/45 en crecimiento, pero tiene menor caída máxima que la HFEA",
+      "contraste": "SPA de las variantes h ∈ {21, 63} frente a la LRS 3x del S&P 500 y frente a la HFEA 55/45 (comprada al cierre anterior al inicio de la ventana, reajuste trimestral); caída máxima (h = 21)",
+      "regla": "«no supera» se confirma si p SPA ≥ 0,10 frente a las dos; «menor caída» si la caída máxima (h = 21) es menor que la de la HFEA"
+    }
+  },
+  "codigo": {
+    "entrada": "letf_lab.research.r36_indicador_holdout.run()",
+    "llamadas": [
+      "letf_lab.research.r36_indicador_holdout.run",
+      "letf_lab.research.r35_indicador.Config.from_dict",
+      "letf_lab.research.r35_indicador.load_all(end=END)",
+      "letf_lab.research.r35_indicador.compute(end=END, cfg)",
+      "letf_lab.research.r35_indicador.fingerprints(R, DEV_END)",
+      "letf_lab.research.r35_indicador.hypotheses(R, TEST_START, END, cfg, premium)",
+      "letf_lab.research.r34_harri.forecast / HARRI.predict_from / gjr_forecast / compare",
+      "letf_lab.research.r10_predictability.har_var_forecast",
+      "letf_lab.data.indicador.make_equity / bond_underlying / cmt_bond / real_fund / fund_spread / ohlc / move",
+      "letf_lab.research.r24_folk.run_multi / hfea / lev_fund",
+      "letf_lab.research.r13_lrs.above_sma / sp500_signal_returns",
+      "letf_lab.stats.garch_fit / garch_filter / gpd_tail / spa_test / stationary_indices / ols_hac"
+    ],
+    "marca_de_ejecucion": "letf/preregistro/articulo7_holdout_ejecutado.json",
+    "informe": "letf/reports/r36_indicador_holdout/README.md"
+  },
+  "estimados_en_desarrollo": {
+    "s": {
+      "SSO": 0.0031575155026699465,
+      "UPRO": 0.0024798328623095067,
+      "QLD": 0.0018988323076794646,
+      "TQQQ": 0.00298733815557654,
+      "UBT": -0.0022821159687268213,
+      "TMF": 0.0007789553751964074,
+      "UST": -0.0016330573201327734,
+      "TYD": -0.004649664807164188
+    },
+    "gasto": {
+      "SSO": 0.0089,
+      "UPRO": 0.0091,
+      "QLD": 0.0095,
+      "TQQQ": 0.0084,
+      "UBT": 0.0095,
+      "TMF": 0.0091,
+      "UST": 0.0095,
+      "TYD": 0.0109
+    },
+    "vencimiento": {
+      "Bono largo": 25.0,
+      "Bono medio": 8.5
+    },
+    "prima_desarrollo": {
+      "S&P 500": 0.054941343593662005,
+      "Nasdaq-100": 0.12549068013348758,
+      "Bono largo": 0.02297836393223054,
+      "Bono medio": 0.016526377986144918
+    }
+  },
+  "huellas_desarrollo": {
+    "S&P 500 h=21": {
+      "días": 12017,
+      "desde": "1971-05-12",
+      "sha256_L": "63c6bb64d5b0d1df5e26b1b07910d726bb9a1ffe86de89042a80ef8689652dc6",
+      "suma_L_star": -1035.039083236652,
+      "L_final": 0
+    },
+    "S&P 500 h=63": {
+      "días": 11933,
+      "desde": "1971-09-10",
+      "sha256_L": "10f860d7d9f410cc6a1d9d04661b074bd6558ae455641754dcd71c885fed710d",
+      "suma_L_star": -2307.119033181172,
+      "L_final": 0
+    },
+    "Nasdaq-100 h=21": {
+      "días": 5548,
+      "desde": "1996-12-13",
+      "sha256_L": "867c2c02eea4c1a1b8354108968340a78559670d99103c5166952e46e1fd4f77",
+      "suma_L_star": 3522.399539016356,
+      "L_final": 0
+    },
+    "Nasdaq-100 h=63": {
+      "días": 5464,
+      "desde": "1997-04-16",
+      "sha256_L": "0d563364fa76a0b4d3dc9da9a1c060814f65887bb54f69e963412efc4103e910",
+      "suma_L_star": 2840.336733482616,
+      "L_final": 0
+    },
+    "Bono largo h=21": {
+      "días": 11514,
+      "desde": "1973-05-10",
+      "sha256_L": "a6de557d0f7c8f2fd628912d092f6dc73c8a347fbcebcdc5c6c62b04e1ab3c93",
+      "suma_L_star": -10474.770175303576,
+      "L_final": 0
+    },
+    "Bono largo h=63": {
+      "días": 11430,
+      "desde": "1973-09-10",
+      "sha256_L": "d7c89e1f73e35f5d5cc5c4cb4a3d67edd8b5edec1fce25c8a73487baa961057d",
+      "suma_L_star": -5777.521897854847,
+      "L_final": 0
+    },
+    "Bono medio h=21": {
+      "días": 11514,
+      "desde": "1973-05-10",
+      "sha256_L": "94af5ae4e465c34dde72430dfa46565aa5235784ebc4aca13ad42ea27cc1cef7",
+      "suma_L_star": -3849.924019521136,
+      "L_final": 0
+    },
+    "Bono medio h=63": {
+      "días": 11430,
+      "desde": "1973-09-10",
+      "sha256_L": "88b5a870316268bf01164fa700380a6e5c17c019f60e479ccafd21445fecd5e3",
+      "suma_L_star": 2697.412380921015,
+      "L_final": 0
+    },
+    "acciones y bonos h=21": {
+      "días": 11514,
+      "sha256_L": "3bc0282402bad3908ea630a09aec83abddbafc3e1540a1b4396f09760452b527"
+    },
+    "acciones y bonos h=63": {
+      "días": 11430,
+      "sha256_L": "ea5df66be6c2b005aa46917d85dc1f5db49232cdb3954e2c01315765a4d36d32"
+    }
+  },
+  "sha256": {
+    "letf_lab/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "letf_lab/data/__init__.py": "dc7f0086c7aed2a3aa2863918fddad56a8caa1ce151b50e2f7e0682cc865bbf3",
+    "letf_lab/data/history.py": "7efefa0139dce752581dda80b94bbe419c21e8bc237d5316f5fd10d55ed17eca",
+    "letf_lab/data/indicador.py": "2a212b91004bca39a3178792ebb85721dd8ef2967e64a3f2e18d23d9e272e845",
+    "letf_lab/data/sources.py": "a882b078e423a29619bb3e41a2a82db87f75dacebf6786f3005c8ef2eb03608a",
+    "letf_lab/data/vix.py": "5e6e7bee5f44c4f23e9dd6bd93ba0585d99670dcdc9bd4f3042e02ce4dc746ae",
+    "letf_lab/kelly.py": "6b892260d836e0b13f433cb08416c5462965a3c42df3b35d952118af12070b44",
+    "letf_lab/metrics.py": "7cb9d02bf1fc7cea7a005af4da5509c76d296e91c3dca85a54371cff0115e5e9",
+    "letf_lab/provenance.py": "d1b93f4fbeba97449506723f57f40a899ef3dacc595a9ba762b6edcaa04024c4",
+    "letf_lab/report.py": "dbd3fdf0da4255146decbe776f222b7442a275bd677d6172bcd8d94f20cacc8b",
+    "letf_lab/research/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "letf_lab/research/common.py": "0c82c57ffa068530305da52922205e0f8ee69f13f34063b12deb4dfb6c96518f",
+    "letf_lab/research/r10_predictability.py": "e5777e4dfda61c45d42e6ac3df70837dd5a38ac0f75cf2d383573f74f549e4a7",
+    "letf_lab/research/r12_long_ml.py": "ba684b02552b12f942de0a18e87084011dc6d579ddfc08f6cb175a599c7128cf",
+    "letf_lab/research/r13_lrs.py": "23f216353644be355e58436844ac492f53613145b2545cf15a8d6a1edb87fce4",
+    "letf_lab/research/r24_folk.py": "37babb06689068b43e24e689dc98ca42647ff0ea0c2089481a3ed66cb090e75d",
+    "letf_lab/research/r26_vix_data.py": "32782574d7279d26e0e3d89f1ca5f767985d6f9faf37deb52a684cd65ab63e98",
+    "letf_lab/research/r34_harri.py": "32de41f3acf1703f07209d8f0ff77831320f54e6e91c4edacf23f94afb3dd46f",
+    "letf_lab/research/r35_indicador.py": "209b7ceaf9a5f228a11ff837d535c72f689b453e13e1e52edd10af611c72095d",
+    "letf_lab/research/r36_indicador_holdout.py": "f220e679bee354ff87e1f43a290550769df666af75e1ae634f19acc7e7711990",
+    "letf_lab/research/r3_synthetic.py": "022c211c3ea5db0394ff4dbea3da4eb3138a68b3141db43b8f5a720d1f52c11e",
+    "letf_lab/sim.py": "06cffc9ffa04e45d6a666e44ba0d9b00f50635ea6b9b688a9355187e071f2638",
+    "letf_lab/stats.py": "e3488a109f8b9059c20522c27c8c1eee078fecac5fdc876845a73e9d7a4b85e4",
+    "letf_lab/universe.py": "7fe2c6519a588913656eac3ac45f1ed6a1effeac958094735048c7e2253ec542"
+  },
+  "decisiones": [
+    "Rango del S&P 500 desde el 21-4-1982 (antes Yahoo trae el máximo y el mínimo «teóricos»), no desde 1960 (R33, R34).",
+    "Muchas aperturas de ^GSPC (hasta 2006) y de ^NDX (hasta 2000) son el cierre anterior: sin término nocturno (R33).",
+    "MOVE solo desde el 12-11-2002 (Yahoo ^MOVE); antes el bono va sin implícita (R33).",
+    "s de TMF, TYD y TMV calibrado desde el 1-1-2011 (hasta 2010 seguían a otro índice) (R33).",
+    "Ruptura de DGS20 el 4-1-1973 (+74 pb con DGS10 en −2 pb): ese día el bono largo sintético solo lleva carry y rodadura.",
+    "Valor prudente de la deriva: μ − f = 0 (ninguna prima sobre la financiación).",
+    "Peso de Kan y Zhou (2007) de la regla de dos fondos con N = 1 y el estimador ajustado de θ².",
+    "Bonos: el error típico del prior (carry) es el de la media de u − f − carry hasta t − 1.",
+    "ee(μ)² = w·ee(prior)² + (S − S̄)²·ee(β)² (varianza a posteriori del prior contraído más la del efecto de la tendencia).",
+    "Efecto de la tendencia: pendiente de la media de las h sesiones siguientes sobre S − S̄, Hansen–Hodrick, cada 21 sesiones.",
+    "L* continuo con el s del 3x y sin comisión; la recomendación discreta usa los costes de cada fondo; el 1x no paga financiación.",
+    "Ruina: probabilidad diaria condicional anualizada, 1 − (1 − p)^252; GJR-GARCH y GPD (cuantil 95%) reestimados cada 252 sesiones con 10 años de mínimo; L = 0 y L = 1 siempre permitidos.",
+    "Histéresis: argmax de g_κ(L) − coste·252/h; coste de 5 pb por unidad negociada (dos al cambiar de fondo); si el L que se tiene deja de estar permitido, se cambia sin histéresis; empates hacia el L menor.",
+    "H3: el prerregistro fija κ = 1, así que las variantes del SPA son h ∈ {21, 63} con κ = 1.",
+    "H8: S&P 500 y bono largo con los 3x (UPRO y TMF) a pesos L/3, L_acc + L_bono ≤ 3 como la HFEA; cada L por debajo del mayor L permitido en su activo; reajuste trimestral y en cada cambio; varianzas robustas con la correlación prevista (HAR sobre la z de Fisher de las correlaciones de 21, 63 y 252 sesiones).",
+    "H4: la estrategia con más exposición media en la ventana se mezcla a diario con letras (sin coste) hasta igualar; la probabilidad de perder el 50% es la de una caída máxima ≥ 50% en remuestreos estacionarios de la ventana.",
+    "H5: descomposición exacta (Shapley) de var(L*) en varianza prevista robusta, prior contraído (menos κ·ee y s) y tendencia; «casi toda» = parte de la varianza ≥ 0,75.",
+    "H2 y H7 deciden con el p de Romano–Wolf de su familia (el protocolo nombra Romano–Wolf); se informa también el p sin ajustar."
+  ]
+}
